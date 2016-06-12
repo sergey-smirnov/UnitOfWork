@@ -43,7 +43,7 @@ namespace UnitOfWork.Impl
             return await Context.SaveChangesAsync();
         }
 
-        public IGenericRepository<TEntity> Repository<TEntity>() where TEntity : class
+        public IGenericRepository<TEntity> GetRepository<TEntity>() where TEntity : class
         {
             var entityName = typeof(TEntity).FullName;
             GenericRepository<TEntity, TDbContext> repository = null;
@@ -55,6 +55,20 @@ namespace UnitOfWork.Impl
             }
 
             return repository ?? (IGenericRepository<TEntity>)_repositories[entityName];
+        }
+
+        public void RegisterRepository<TEntity>(IGenericRepository<TEntity> repository) where TEntity : class
+        {
+            var entityName = typeof(TEntity).FullName;
+
+            if (!_repositories.ContainsKey(entityName))
+            {
+                _repositories.Add(entityName, repository);
+            }
+            else
+            {
+                _repositories[entityName] = repository;
+            }
         }
 
         #endregion
@@ -79,6 +93,11 @@ namespace UnitOfWork.Impl
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        #endregion
+
+        #region Private methods
+
 
         #endregion
     }

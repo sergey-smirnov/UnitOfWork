@@ -6,7 +6,8 @@ namespace UnitOfWork.Base
     {
         TDbContext Context { get; }
 
-        IGenericRepository<TEntity> Repository<TEntity>() where TEntity : class;
+        IGenericRepository<TEntity> GetRepository<TEntity>() where TEntity : class;
+        void RegisterRepository<TEntity>(IGenericRepository<TEntity> repository) where TEntity : class;
 
         int Save();
         Task<int> SaveAsync();
